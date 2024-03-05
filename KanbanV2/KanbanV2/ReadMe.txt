@@ -1,4 +1,4 @@
-KANBANV2 - Bhavya Dua, 21F1003641
+KANBANV2 - Bhavya Dua
 
 A.) For starting up the Flask application: 
 1. Ensure you are in the backend directory (cd backend). 
