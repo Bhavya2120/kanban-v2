@@ -1,0 +1,575 @@
+openapi: 3.0.0
+info:
+  title: KanBanV2 app
+  contact:
+    email: 21f1006544@student.onlinedegree.iitm.ac.in
+  version: 1.0.0
+servers:
+  - url: http://127.0.0.1:5000/
+paths:
+  /register:
+    post:
+      tags:
+        - Users
+      summary: Add a new User
+      description: ''
+      operationId: adduser
+      parameters:
+        - in: query
+          name: name
+          description: 'User Name'
+          required: true
+          schema:
+            type: string
+            example: "Bhavya"
+        - in: query
+          name: email
+          description: 'User Email'
+          required: true
+          schema:
+            type: string
+            example: "21f1003641@gmail.com"
+        - in: query
+          name: password
+          description: 'User Password'
+          required: true
+          schema:
+            type: string
+            example: "SecretPassword@95"
+      responses:
+        '200':
+          description: User Added Successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    user_id:
+                      type: integer
+                      example: 1
+                    user_mail:
+                      type: string
+                      example: '21f1003641@gmail.com'
+                    user_password:
+                      type: string
+                      example: 'SecretPassword@95'
+                    user_name:
+                      type: string
+                      example: 'Bhavya'
+  /login:
+    post:
+      tags:
+        - Login
+      summary: For Login
+      description: To Login and get authentication via JWT
+      operationId: login
+      parameters:
+        - in: query
+          name: email
+          description: Enter Email
+          required: true
+          schema:
+            type: string
+            example: 21f1003641@gmail.com
+        - in: query
+          name: password
+          description: Enter Password
+          required: true
+          schema:
+            type: string
+            example: '9595'
+      responses:
+        '200':
+          description: Login Successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    user_id:
+                      type: integer
+                      example: 1
+                    password:
+                      type: string
+                      example: '1234'
+                    name:
+                      type: string
+                      example: Bhavya
+        '401':
+          description: Incorrect password
+  /addcard/{list_id}:
+    post:
+      tags:
+        - Cards
+      summary: Add a new card to list
+      description: ''
+      operationId: addcard
+      parameters:
+        - in: path
+          name: list_id
+          description: ''
+          required: true
+          schema:
+            type: integer
+        - in: header
+          name: authorization-token
+          description: authorization header using JWT
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: title
+          description: Title of the card
+          required: true
+          schema:
+            type: string
+            example: 'Card1'
+        - in: query
+          name: content
+          description: 'Description/Content of the card'
+          required: false
+          schema:
+            type: string
+            example: 'This is a card of list 1'
+        - in: query
+          name: complete
+          description: 'Boolean indicator'
+          required: false
+          schema:
+            type: boolean
+            example: 'True'
+        - in: query
+          name: complete-date
+          description: 'Date of completion of card'
+          required: false
+          schema:
+            type: string
+            example: '2022-12-23'
+        - in: query
+          name: deadline
+          description: 'Completion Deadline of the card'
+          required: true
+          schema:
+            type: datetime
+            example: '2023-01-01 00:00:00'
+        - in: query
+          name: card-list
+          description: 'List to which card belongs'
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - in: query
+          name: card-user
+          description: 'User to whom card belongs'
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Card Added Successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    card_id:
+                      type: integer
+                      example: 1
+                    title:
+                      type: string
+                      example: 'CardEx'
+                    content:
+                      type: string
+                      example: 'CardContent'
+                    complete-date:
+                      type: string
+                      example: '2023-01-12'
+                    deadline:
+                      type: datetime
+                      example: '2023-01-10'
+                    card-list:
+                      type: integer
+                      example: 1
+                    card-user:
+                      type: integer
+                      example: 1
+        '401':
+          description: Token Expired
+  /cards/{cardlist}:
+    get:
+      tags:
+        - Lists
+      summary: View a card
+      description: ''
+      operationId: cardview
+      parameters:
+        - in: header
+          name: authorization-token
+          description: authorization header using JWT
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: cardlist
+          description: ''
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    card_id:
+                      type: integer
+                      example: 1
+                    title:
+                      type: string
+                      example: 'Card1'
+                    content:
+                      type: string
+                      example: 'Card1Content'
+                    complete:
+                      type: boolean
+                      example: True
+                    complete-date:
+                      type: string
+                      example: '2023-01-02'
+                    deadline:
+                      type: datetime
+                      example: '2023-01-01'
+        '401':
+          description: Invalid Token or Token Missing
+  /createlist/{userid}:
+    post:
+      tags:
+        - Lists
+      summary: Create a new List
+      description: ''
+      operationId: createlist
+      parameters:
+        - in: header
+          name: authorization-token
+          description: authorization header using JWT
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: userid
+          description: ''
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: list_name
+          description: 'Name of List'
+          required: true
+          schema:
+            type: string
+            example: 'List1'
+      responses:
+        '200':
+          description: List Added Successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    list_id:
+                      type: integer
+                      example: 1
+                    list_name:
+                      type: string
+                      example: 'List 1'
+                    list_user:
+                      type: integer
+                      example: 1
+        '401':
+          description: Invalid Token or Token Missing
+  /cards/update/{listid}:
+    post:
+      tags:
+        - Cards
+      summary: Update a Card
+      description: ''
+      operationId: updatecard
+      parameters:
+        - in: header
+          name: authorization-token
+          description: authorization header using JWT
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: listid
+          description: ''
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: title
+          description: 'Card Title'
+          required: true
+          schema:
+            type: string
+            example: 'Card 1'
+        - in: query
+          name: content
+          description: 'Card Content'
+          required: true
+          schema:
+            type: string
+            example: 'Card 1 Content'
+        - in: query
+          name: complete
+          description: 'Card complete status'
+          required: false
+          schema:
+            type: boolean
+            example: 'True'
+        - in: query
+          name: card_list
+          description: 'List to which card belongs'
+          required: True
+          schema:
+            type: integer
+            example: 1
+        - in: query
+        name: complete_date
+        description: 'Date of completion'
+        required: false
+        schema: 
+          type: string
+          example: '2022-12-12'
+      responses:
+        '200':
+          description: Card Updated Successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    card_id:
+                      type: integer
+                      example: 1
+                    card_title:
+                      type: string
+                      example: 'Card 1'
+                    card_content:
+                      type: string
+                      example: 'Card 1 content'
+                    card_complete:
+                      type: boolean
+                      example: 'True'
+                    card_complete_date:
+                      type: datetime
+                      example: '2022-12-11'
+                    card_list:
+                      type: integer
+                      example: 1
+        '401':
+          description: Invalid Token or Token Missing
+  /cards/delete/{cardid}:
+    get:
+      tags:
+        - Cards
+      summary: Delete a card
+      description: ''
+      operationId: delcard
+      parameters:
+        - in: header
+          name: authorization-token
+          description: authorization header using JWT
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: cardid
+          description: ''
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Card Deleted Successfully
+        '401':
+          description: Invalid Token or Token Missing
+  /lists/update/{listid}:
+    post:
+      tags:
+        - Lists
+      summary: Update a List
+      description: ''
+      operationId: updatelist
+      parameters:
+        - in: header
+          name: authorization-token
+          description: authorization header using JWT
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: listid
+          description: ''
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - in: query
+          name: list_name
+          description: 'Name of the List'
+          required: True
+          schema:
+            type: string
+            example: 'List 2'
+      responses:
+        '200':
+          description: List Updated Successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    list_id:
+                      type: integer
+                      example: 1
+                    list_name:
+                      type: string
+                      example: 'List 1'
+                    list_user:
+                      type: integer
+                      example: 1
+        '401':
+          description: Invalid Token or Token is Missing
+  /lists/delete/{id}:
+    get:
+      tags:
+        - Lists
+      summary: Delete a List
+      description: ''
+      operationId: listdel
+      parameters:
+        - in: header
+          name: authorization-token
+          description: authorization header using JWT
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: id
+          description: ''
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: List Deleted Successfully
+        '401':
+          description: Invalid Token or Token Missing
+  /export/{userid}:
+    get:
+      tags:
+        - Lists
+      summary: Export all lists of user
+      description: ''
+      operationId: listexport
+      parameters:
+        - in: header
+          name: authorization-token
+          description: authorization header using JWT
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: userid
+          description: ''
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    list_id:
+                      type: integer
+                      example: 1
+                    list_name:
+                      type: string
+                      example: 'List 1'
+                    list_user:
+                      type: integer
+                      example: 1
+        '401':
+          description: Invalid Token or Token Missing
+/exportcard/{listid}:
+    get:
+      tags:
+        - Cards
+      summary: Export all cards of list
+      description: ''
+      operationId: cardexport
+      parameters:
+        - in: header
+          name: authorization-token 
+          description: authorization header using JWT
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: listid
+          description: ''
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    card_id:
+                      type: integer
+                      example: 1
+                    title:
+                      type: string
+                      example: 'CardEx'
+                    content:
+                      type: string
+                      example: 'CardContent'
+                    complete-date:
+                      type: datetime
+                      example: '2023-01-12'
+                    deadline:
+                      type: datetime
+                      example: '2023-01-10'
+                    card-list:
+                      type: integer
+                      example: 1
+                    card-user:
+                      type: integer
+                      example: 1
+        '401':
+          description: Invalid Token or Token Missing
